@@ -1,0 +1,2127 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>직선의 방정식 칼로 과일 자르기</title>
+    <style>
+:root {
+    --bg-dark: #07070d;
+    --panel-bg: #111827;
+    --panel-soft: #1f2937;
+    --cyan: #22d3ee;
+    --cyan-soft: rgba(34, 211, 238, 0.18);
+    --red: #dc2626;
+    --green: #22c55e;
+    --gold: #fbbf24;
+    --purple: #a78bfa;
+    --text-light: #f8fafc;
+    --text-muted: #94a3b8;
+}
+* {
+    box-sizing: border-box;
+    font-family: 'Pretendard', sans-serif;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    color: var(--text-light);
+}
+body {
+    width: 100vw;
+    min-height: 100vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 6px 0 12px 0;
+    gap: 0;
+}
+#game-frame {
+    width: 100%;
+    max-width: 580px;
+    height: 820px;
+    flex-shrink: 0;
+    background: radial-gradient(circle at 50% 20%, #111827 0%, #07070d 58%, #020617 100%);
+    border: 3px solid rgba(34, 211, 238, 0.55);
+    border-radius: 18px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 0 35px rgba(34, 211, 238, 0.25), 0 30px 70px rgba(0, 0, 0, 0.8);
+}
+#screen-start {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, #111827 0%, #07070d 68%);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    padding: 28px;
+    align-items: center;
+    justify-content: space-between;
+}
+.start-top-banner {
+    width: 100%;
+    text-align: center;
+    margin-top: 12px;
+}
+.start-kanji {
+    font-size: 5.2rem;
+    font-weight: 900;
+    line-height: 0.9;
+    color: rgba(220, 38, 38, 0.82);
+    text-shadow: 0 0 20px rgba(220, 38, 38, 0.5), 0 0 35px rgba(34, 211, 238, 0.18);
+    margin-bottom: 4px;
+}
+.start-title {
+    font-size: 2.05rem;
+    font-weight: 900;
+    color: var(--text-light);
+    letter-spacing: -1px;
+    line-height: 1.24;
+    margin: 6px 0 10px;
+    text-shadow: 0 0 10px rgba(34, 211, 238, 0.7);
+}
+.start-credits-badge {
+    background: rgba(34, 211, 238, 0.12);
+    border: 2px solid rgba(34, 211, 238, 0.85);
+    color: var(--cyan);
+    font-size: 0.95rem;
+    font-weight: 900;
+    padding: 5px 16px;
+    border-radius: 999px;
+    display: inline-block;
+    box-shadow: 0 0 16px rgba(34, 211, 238, 0.25);
+}
+.start-illustration {
+    width: 260px;
+    height: 230px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.illus-watermelon-top, .illus-watermelon-bottom {
+    width: 146px;
+    height: 72px;
+    background: #22c55e;
+    border: 4px solid #052e16;
+    position: absolute;
+    left: 50%;
+    margin-left: -73px;
+    overflow: hidden;
+    box-shadow: inset 0 10px 0 rgba(21, 128, 61, 0.75), 0 0 18px rgba(34, 197, 94, 0.24);
+}
+.illus-watermelon-top {
+    top: 46px;
+    border-radius: 146px 146px 0 0;
+    border-bottom: 0;
+    transform: rotate(-12deg) translateY(-12px);
+}
+.illus-watermelon-bottom {
+    bottom: 44px;
+    border-radius: 0 0 146px 146px;
+    border-top: 0;
+    transform: rotate(-12deg) translateY(12px);
+}
+.illus-watermelon-top::before, .illus-watermelon-bottom::before {
+    content: '';
+    position: absolute;
+    left: 9px;
+    right: 9px;
+    height: 12px;
+    background: #fecdd3;
+}
+.illus-watermelon-top::before {
+    bottom: 0;
+    border-radius: 8px 8px 0 0;
+}
+.illus-watermelon-bottom::before {
+    top: 0;
+    border-radius: 0 0 8px 8px;
+}
+.illus-watermelon-top::after, .illus-watermelon-bottom::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #020617;
+    box-shadow: 32px 7px 0 #020617, 64px -2px 0 #020617, 94px 6px 0 #020617;
+}
+.illus-watermelon-top::after {
+    left: 22px;
+    bottom: 18px;
+}
+.illus-watermelon-bottom::after {
+    left: 22px;
+    top: 20px;
+}
+.illus-katana {
+    position: absolute;
+    width: 238px;
+    height: 8px;
+    border-radius: 8px;
+    background: linear-gradient(90deg, transparent 0%, var(--cyan) 10%, #ffffff 48%, var(--cyan) 86%, transparent 100%);
+    box-shadow: 0 0 16px rgba(34, 211, 238, 0.9), 0 0 32px rgba(34, 211, 238, 0.35);
+    transform: rotate(28deg);
+    z-index: 4;
+}
+.illus-katana::after {
+    content: '';
+    position: absolute;
+    right: 20px;
+    top: -9px;
+    width: 34px;
+    height: 26px;
+    border-radius: 7px;
+    background: #111827;
+    border: 3px solid var(--gold);
+    box-shadow: 0 0 14px rgba(251, 191, 36, 0.4);
+}
+.start-buttons-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    max-width: 286px;
+    margin-bottom: 18px;
+}
+.menu-btn {
+    background: linear-gradient(180deg, #f8fafc, #cbd5e1);
+    color: #020617;
+    border: 3px solid #020617;
+    border-radius: 12px;
+    padding: 13px 0;
+    font-size: 1.25rem;
+    font-weight: 900;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+    box-shadow: 4px 4px 0 #020617, 0 0 15px rgba(34, 211, 238, 0.18);
+    transition: transform 0.08s, box-shadow 0.08s;
+}
+.menu-btn:active {
+    transform: translate(3px, 3px);
+    box-shadow: 1px 1px 0 #020617;
+}
+#header-status {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 9px;
+    padding: 13px;
+    background: rgba(2, 6, 23, 0.94);
+    border-bottom: 1px solid rgba(34, 211, 238, 0.32);
+    flex-shrink: 0;
+}
+.header-item {
+    border: 2px solid #020617;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 900;
+    padding: 7px 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: 38px;
+}
+.score-board {
+    background: var(--cyan);
+    color: #020617;
+    box-shadow: 0 0 12px rgba(34, 211, 238, 0.35);
+}
+.stage-board {
+    background: var(--gold);
+    color: #020617;
+    box-shadow: 0 0 12px rgba(251, 191, 36, 0.35);
+}
+.fever-board {
+    background: #f8fafc;
+    color: #020617;
+    position: relative;
+    overflow: hidden;
+}
+.fever-label {
+    color: #020617;
+    z-index: 2;
+}
+.fever-bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0%;
+    background: var(--red);
+    z-index: 1;
+    transition: width 0.2s ease;
+}
+.fever-active {
+    animation: pulse-fever 0.42s infinite alternate;
+}
+@keyframes pulse-fever {
+    from { background: var(--red); }
+    to { background: var(--gold); }
+}
+#playzone-container {
+    flex: 1;
+    position: relative;
+    background-color: #020617;
+    margin: 0 13px;
+    border: 2px solid rgba(34, 211, 238, 0.65);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: inset 0 0 24px rgba(34, 211, 238, 0.14);
+    min-height: 0;
+}
+#coordinate-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+#control-panel {
+    padding: 13px;
+    display: grid;
+    grid-template-columns: 1fr 1.26fr;
+    gap: 13px;
+    align-items: start;
+    background: rgba(2, 6, 23, 0.96);
+    border-top: 1px solid rgba(34, 211, 238, 0.3);
+    flex-shrink: 0;
+}
+.mode-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+.btn-mode {
+    background: linear-gradient(180deg, #1f2937, #111827);
+    border: 2px solid rgba(34, 211, 238, 0.7);
+    color: var(--text-light);
+    padding: 10px;
+    font-size: 1.08rem;
+    font-weight: 900;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    box-shadow: 0 3px 0 #020617;
+}
+.btn-mode.active {
+    background: var(--cyan);
+    color: #020617;
+    box-shadow: inset 0 4px 8px rgba(0,0,0,0.22), 0 0 12px rgba(34, 211, 238, 0.35);
+    transform: translateY(1px);
+}
+.action-buttons {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 10px;
+    height: 64px;
+    align-items: stretch;
+}
+.btn-stop {
+    width: 64px;
+    height: 64px;
+    background: var(--red);
+    border: 3px solid #020617;
+    color: #020617;
+    font-size: 1rem;
+    font-weight: 1000;
+    border-radius: 13px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 6px 0 #7f1d1d, 0 0 16px rgba(220, 38, 38, 0.3);
+}
+.btn-stop:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #7f1d1d;
+}
+.btn-stop.running {
+    background: var(--green);
+    box-shadow: 0 6px 0 #14532d, 0 0 16px rgba(34, 197, 94, 0.28);
+}
+.btn-equation-trigger {
+    display: block;
+    visibility: hidden;
+    height: 64px;
+    background: var(--gold);
+    border: 3px solid #020617;
+    color: #020617;
+    font-size: 1.05rem;
+    font-weight: 900;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 #92400e, 0 0 15px rgba(251, 191, 36, 0.24);
+}
+.btn-equation-trigger:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 #92400e;
+}
+/* === 슬라이더 박스: 게임 프레임 바깥의 독립 컨테이너 === */
+#mode2-slider-box {
+    display: none;
+    width: 100%;
+    max-width: 580px;
+    flex-shrink: 0;
+    margin-top: 8px;
+    background: rgba(17, 24, 39, 0.96);
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 2px solid rgba(34, 211, 238, 0.55);
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.18);
+}
+.slider-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.slider-row label {
+    font-weight: 900;
+    color: var(--cyan);
+    width: 86px;
+    flex-shrink: 0;
+}
+.slider-row input {
+    flex: 1;
+    accent-color: var(--cyan);
+}
+.slider-row span {
+    width: 48px;
+    text-align: right;
+    font-weight: 900;
+    display: inline-flex;
+    justify-content: flex-end;
+    align-items: center;
+    flex-shrink: 0;
+}
+/* === 모달: position fixed 로 슬라이더까지 덮음 === */
+.modal, #overlay-math-board, #overlay-quiz-board {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.78);
+    z-index: 300;
+    padding: 24px;
+    justify-content: center;
+    align-items: center;
+}
+#overlay-math-board {
+    z-index: 320;
+}
+#overlay-quiz-board {
+    z-index: 310;
+}
+.whiteboard, .modal-content {
+    background: #111827;
+    border: 3px solid var(--cyan);
+    width: 100%;
+    max-width: 440px;
+    border-radius: 14px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    color: var(--text-light);
+    box-shadow: 0 0 26px rgba(34, 211, 238, 0.28), 0 24px 50px rgba(0,0,0,0.55);
+}
+.modal-content {
+    text-align: center;
+}
+.modal-content h2 {
+    color: var(--cyan);
+    margin-top: 0;
+    font-size: 1.75rem;
+}
+.modal-content p {
+    font-size: 1.06rem;
+    line-height: 1.58;
+    color: #cbd5e1;
+    margin-bottom: 18px;
+}
+.modal-content li {
+    text-align: left;
+    margin-bottom: 10px;
+    line-height: 1.5;
+    color: #cbd5e1;
+}
+.whiteboard-expr-zone {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 118px;
+    border: 2px solid rgba(34, 211, 238, 0.35);
+    margin-bottom: 14px;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 10px;
+    background: rgba(2, 6, 23, 0.56);
+    border-radius: 10px;
+}
+.math-char {
+    display: inline-block;
+    position: relative;
+    font-size: 2.1rem;
+    font-weight: 900;
+    min-width: 15px;
+    text-align: center;
+    color: #f8fafc;
+}
+.math-cursor {
+    display: inline-block;
+    width: 3px;
+    height: 36px;
+    background: var(--purple);
+    vertical-align: middle;
+    animation: blink 0.8s infinite;
+    position: absolute;
+    left: -2px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+@keyframes blink {
+    50% { opacity: 0; }
+}
+.math-keypad {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+.m-key {
+    background: #e2e8f0;
+    border: 2px solid #020617;
+    border-radius: 8px;
+    padding: 10px 0;
+    font-size: 1.14rem;
+    font-weight: 900;
+    cursor: pointer;
+    color: #020617;
+    text-align: center;
+    box-shadow: 0 3px 0 #020617;
+}
+.m-key:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #020617;
+}
+.m-key.submit-key {
+    background: var(--green);
+    color: #020617;
+    grid-column: span 2;
+}
+.m-key.cancel-key {
+    background: var(--red);
+    color: #f8fafc;
+}
+.m-key.clear-key {
+    background: #fb7185;
+    color: #020617;
+    grid-column: span 2;
+}
+.m-key.accent-key {
+    background: #cbd5e1;
+}
+.m-key.var-key {
+    background: var(--gold);
+}
+.m-key.paren-key {
+    background: var(--purple);
+    color: #020617;
+}
+.quiz-option-btn {
+    background: #f8fafc;
+    border: 3px solid #020617;
+    border-radius: 11px;
+    padding: 13px;
+    font-size: 1.28rem;
+    font-weight: 900;
+    cursor: pointer;
+    text-align: center;
+    color: #020617;
+    box-shadow: 3px 4px 0 #020617;
+    min-height: 58px;
+}
+.quiz-option-btn:active {
+    transform: translate(2px, 3px);
+    box-shadow: 1px 1px 0 #020617;
+    background: #cbd5e1;
+}
+#combo-layer {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    color: var(--gold);
+    font-size: 3.4rem;
+    font-weight: 1000;
+    text-shadow: 0 0 14px rgba(251, 191, 36, 0.7), -3px 3px 0 #020617, 3px 3px 0 #020617, 3px -3px 0 #020617, -3px -3px 0 #020617;
+    z-index: 80;
+    pointer-events: none;
+    transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#combo-layer.pop {
+    transform: translate(-50%, -50%) scale(1);
+}
+#damage-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(220, 38, 38, 0.36);
+    box-shadow: inset 0 0 100px rgba(220, 38, 38, 0.9);
+    z-index: 150;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.1s ease-out;
+}
+.damage-flash {
+    opacity: 1 !important;
+    animation: shake 0.3s cubic-bezier(.36,.07,.19,.97) both;
+}
+@keyframes shake {
+    10%, 90% { transform: translate3d(-2px, 0, 0); }
+    20%, 80% { transform: translate3d(4px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+    40%, 60% { transform: translate3d(6px, 0, 0); }
+}
+#toast-message {
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(2, 6, 23, 0.96);
+    color: #f8fafc;
+    padding: 12px 20px;
+    border-radius: 10px;
+    border-left: 4px solid var(--red);
+    font-weight: 900;
+    font-size: 1.06rem;
+    z-index: 400;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+    display: none;
+    text-align: center;
+    box-shadow: 0 0 22px rgba(0,0,0,0.55);
+    word-break: keep-all;
+    max-width: 88%;
+}
+/* === 분수 컴팩트 표시 === */
+.frac-wrap {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+    line-height: 1;
+    gap: 3px;
+}
+.frac-neg {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    height: 1.3em;
+    margin-right: 4px;
+}
+.frac {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    line-height: 1;
+    font-size: 0.84em;
+    min-width: 0.7em;
+    margin: 0 2px;
+}
+.frac .num {
+    display: block;
+    border-bottom: 2px solid currentColor;
+    padding: 0 1px 2px;
+    line-height: 1;
+}
+.frac .den {
+    display: block;
+    padding: 2px 1px 0;
+    line-height: 1;
+}
+.eq-html {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.22em;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.eq-term {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+}
+.eq-op {
+    display: inline-flex;
+    align-items: center;
+    padding: 0 2px;
+}
+/* === 모드2 객관식 옵션 안에서는 분수 더 컴팩트하게 === */
+.quiz-option-btn .frac {
+    font-size: 0.78em;
+    min-width: 0.6em;
+    margin: 0 1px;
+}
+.quiz-option-btn .frac .num { padding: 0 1px 1px; }
+.quiz-option-btn .frac .den { padding: 1px 1px 0; }
+.quiz-option-btn .frac-wrap { gap: 2px; }
+.quiz-option-btn .frac-neg { margin-right: 2px; }
+
+</style>
+</head>
+<body>
+<div id="game-frame">
+    <div id="damage-overlay"></div>
+    <div id="toast-message"></div>
+    <div id="combo-layer">2 COMBO!</div>
+    <div id="screen-start">
+        <div class="start-top-banner">
+            <div class="start-kanji">斬</div>
+            <div class="start-credits-badge">made by co.병재</div>
+            <h1 class="start-title">직선의 방정식 칼로<br>과일 자르기</h1>
+        </div>
+        <div class="start-illustration">
+            <div class="illus-watermelon-top"></div>
+            <div class="illus-watermelon-bottom"></div>
+            <div class="illus-katana"></div>
+        </div>
+        <div class="start-buttons-group">
+            <button class="menu-btn" onclick="initGameRun()">게임 시작</button>
+            <button class="menu-btn" style="background:linear-gradient(180deg,#e2e8f0,#94a3b8);" onclick="toggleHelp(true)">도움말</button>
+        </div>
+    </div>
+    <div id="popup-help" class="modal" onclick="toggleHelp(false)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <h2>修練 방법</h2>
+            <ul>
+                <li><strong>STOP</strong> 버튼을 눌러 과일을 멈춘 뒤 좌표를 선택합니다.</li>
+                <li><strong>mode1</strong>은 두 점을 찍고 직접 직선의 방정식을 입력합니다.</li>
+                <li><strong>mode2</strong>는 한 점과 기울기를 정한 뒤 알맞은 식을 선택합니다.</li>
+                <li>mode1은 100%, mode2는 60% 점수 가중치가 적용됩니다.</li>
+                <li>피버 중에는 점수가 2배이며, STOP 상태에서는 피버 게이지가 멈춥니다.</li>
+            </ul>
+            <button class="menu-btn" style="width:100%; margin:12px 0 0;" onclick="toggleHelp(false)">닫기</button>
+        </div>
+    </div>
+    <div id="popup-stage-summary" class="modal">
+        <div class="modal-content">
+            <h2 id="summary-title">STAGE 1 CLEAR</h2>
+            <p id="summary-desc">사용한 검격 수: 0<br>획득 점수: 0</p>
+            <button class="menu-btn" style="width:100%;" onclick="proceedToNextStage()">다음 스테이지</button>
+        </div>
+    </div>
+    <div id="popup-final-result" class="modal">
+        <div class="modal-content">
+            <h2>勝 ALL CLEAR 勝</h2>
+            <p id="final-desc">최종 총 점수: 0점</p>
+            <button class="menu-btn" style="width:100%;" onclick="returnToStartScreen()">처음으로</button>
+        </div>
+    </div>
+    <div id="header-status">
+        <div class="header-item score-board" id="score-text">SCORE 0</div>
+        <div class="header-item stage-board" id="stage-text">STAGE 1/4</div>
+        <div class="header-item fever-board">
+            <div class="fever-bar-fill" id="fever-fill"></div>
+            <div class="fever-label" id="fever-txt">fever</div>
+        </div>
+    </div>
+    <div id="playzone-container">
+        <canvas id="coordinate-canvas"></canvas>
+    </div>
+    <div id="control-panel">
+        <div class="mode-selection">
+            <div class="btn-mode active" id="m-btn-1" onclick="switchMode(1)">mode1</div>
+            <div class="btn-mode" id="m-btn-2" onclick="switchMode(2)">mode2</div>
+        </div>
+        <div class="action-buttons">
+            <button class="btn-stop" id="main-action-btn" onclick="handleMainAction()">STOP</button>
+            <button class="btn-equation-trigger" id="eq-trigger-btn" onclick="openMathBoard()">식 입력</button>
+        </div>
+    </div>
+</div>
+<div id="mode2-slider-box">
+    <div class="slider-row">
+        <label>기울기(m)</label>
+        <input type="range" id="slider-m" min="-3" max="3" step="0.5" value="1" oninput="updateMode2Slope()">
+        <span id="val-m">1</span>
+    </div>
+</div>
+<div id="overlay-math-board">
+    <div class="whiteboard">
+        <div class="whiteboard-expr-zone" id="expr-display"></div>
+        <div class="math-keypad">
+            <button class="m-key" onclick="typeMath('1')">1</button>
+            <button class="m-key" onclick="typeMath('2')">2</button>
+            <button class="m-key" onclick="typeMath('3')">3</button>
+            <button class="m-key accent-key" onclick="typeMath('+')">+</button>
+            <button class="m-key" onclick="typeMath('4')">4</button>
+            <button class="m-key" onclick="typeMath('5')">5</button>
+            <button class="m-key" onclick="typeMath('6')">6</button>
+            <button class="m-key accent-key" onclick="typeMath('-')">−</button>
+            <button class="m-key" onclick="typeMath('7')">7</button>
+            <button class="m-key" onclick="typeMath('8')">8</button>
+            <button class="m-key" onclick="typeMath('9')">9</button>
+            <button class="m-key accent-key" onclick="typeMath('=')">=</button>
+            <button class="m-key" onclick="typeMath('0')">0</button>
+            <button class="m-key var-key" onclick="typeMath('y')">y</button>
+            <button class="m-key var-key" onclick="typeMath('x')">x</button>
+            <button class="m-key paren-key" onclick="typeMath('(')">(</button>
+            <button class="m-key accent-key" onclick="typeMath('backspace')">⌫</button>
+            <button class="m-key accent-key" onclick="moveCursor(-1)">&lt;</button>
+            <button class="m-key accent-key" onclick="moveCursor(1)">&gt;</button>
+            <button class="m-key paren-key" onclick="typeMath(')')">)</button>
+            <button class="m-key clear-key" onclick="typeMath('clear')">C</button>
+            <button class="m-key submit-key" onclick="submitMathForm()">확인</button>
+            <button class="m-key cancel-key" style="grid-column: span 4; margin-top: 4px;" onclick="closeMathBoard()">닫기</button>
+        </div>
+    </div>
+</div>
+<div id="overlay-quiz-board">
+    <div class="modal-content" style="max-width:440px; border-color:var(--cyan);">
+        <h2 style="color:var(--cyan); font-size:1.45rem; margin-bottom:12px;">直線 식 선택</h2>
+        <p id="quiz-question-text" style="font-weight:900; font-size:1.05rem; color:#f8fafc; line-height:1.55; margin-bottom:18px; word-break:keep-all;"></p>
+        <div id="quiz-options-container" style="display:grid; grid-template-columns:1fr; gap:12px; margin-bottom:18px;"></div>
+        <button class="menu-btn" style="width:100%; background:linear-gradient(180deg,#ef4444,#991b1b); color:#f8fafc;" onclick="closeQuizBoard()">취소하기</button>
+    </div>
+</div>
+    <script>
+/* ===== state.js ===== */
+// ============================================================
+// state.js
+// 게임 상태와 설정 — 난이도 조절은 여기서
+// ============================================================
+
+let gameState = "START";
+let activeMode = 1;
+let score = 0;
+let feverGauge = 0;
+let isFeverTime = false;
+let feverTimer = null;
+let feverTicks = 0;
+let canvas, ctx;
+let fruits = [];
+let popups = [];
+let selectedPoints = [];
+let isDraggingPoint = false;
+let dragIdx = -1;
+let dragOffset = { x: 0, y: 0 };
+let formulaStr = "";
+let cursorIdx = 0;
+let sliderM = 1;
+const EPS = 1e-6;
+const mathGrid = { minX: -7, maxX: 7, minY: -7, maxY: 7 };
+const gravity = -0.0022;
+let currentStage = 1;
+let stageCutsUsed = 0;
+let stageScoreEarned = 0;
+let fruitsRemainingToSpawn = 0;
+let stageSpawnToken = 0;
+const stageConfig = {
+    1: { totalFruits: 3 },
+    2: { totalFruits: 5 },
+    3: { totalFruits: 7 },
+    4: { totalFruits: 9 }
+};
+const fruitTypes = ['watermelon', 'coconut', 'apple', 'orange'];
+let slashAnim = { active: false, x1: 0, y1: 0, x2: 0, y2: 0, timer: 0 };
+let quizCorrectKey = "";
+let quizCorrectCut = { A: 0, B: -1, C: 0 };
+const SLICE_DELAY_MS = 900;
+
+</script>
+    <script>
+/* ===== fraction.js ===== */
+// ============================================================
+// fraction.js
+// 분수 표시 (가로/세로/음수)
+// ============================================================
+
+function gcd(a, b) {
+    a = Math.abs(a);
+    b = Math.abs(b);
+    while (b) {
+        const t = a % b;
+        a = b;
+        b = t;
+    }
+    return a || 1;
+}
+
+function getFractionParts(value) {
+    if (Math.abs(value) < EPS) return { sign: 1, n: 0, d: 1 };
+    const sign = value < 0 ? -1 : 1;
+    let n = Math.round(Math.abs(value) * 1000);
+    let d = 1000;
+    const g = gcd(n, d);
+    n /= g;
+    d /= g;
+    return { sign, n, d };
+}
+
+function formatNumberHTML(value) {
+    const f = getFractionParts(value);
+    if (f.d === 1) return `${f.sign < 0 ? '−' : ''}${f.n}`;
+    const frac = `<span class="frac"><span class="num">${f.n}</span><span class="den">${f.d}</span></span>`;
+    if (f.sign < 0) return `<span class="frac-wrap"><span class="frac-neg">−</span>${frac}</span>`;
+    return `<span class="frac-wrap">${frac}</span>`;
+}
+
+function formatPositiveNumberHTML(value) {
+    return formatNumberHTML(Math.abs(value));
+}
+
+function formatCoeffHTML(m) {
+    if (Math.abs(m) < EPS) return "";
+    if (Math.abs(m - 1) < EPS) return `<span class="eq-term">x</span>`;
+    if (Math.abs(m + 1) < EPS) return `<span class="eq-term">−x</span>`;
+    return `<span class="eq-term">${formatNumberHTML(m)}x</span>`;
+}
+
+function formatEquationHTML(eq) {
+    if (eq.type === 'x') return `<span class="eq-html">x <span class="eq-op">=</span> ${formatNumberHTML(eq.v)}</span>`;
+    if (eq.type === 'y') return `<span class="eq-html">y <span class="eq-op">=</span> ${formatNumberHTML(eq.v)}</span>`;
+    const m = eq.m;
+    const b = eq.b;
+    if (Math.abs(m) < EPS) return `<span class="eq-html">y <span class="eq-op">=</span> ${formatNumberHTML(b)}</span>`;
+    let html = `<span class="eq-html">y <span class="eq-op">=</span> ${formatCoeffHTML(m)}`;
+    if (Math.abs(b) >= EPS) {
+        html += ` <span class="eq-op">${b > 0 ? '+' : '−'}</span> ${formatPositiveNumberHTML(b)}`;
+    }
+    html += `</span>`;
+    return html;
+}
+
+
+</script>
+    <script>
+/* ===== math.js ===== */
+// ============================================================
+// math.js
+// 직선 방정식 계산, 식 검증, 유틸
+// ============================================================
+
+function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+}
+
+function escapeHTML(str) {
+    return str.replace(/[&<>"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]));
+}
+
+function equationKey(eq) {
+    if (eq.type === 'line') return `line|${scaleKey(eq.m)}|${scaleKey(eq.b)}`;
+    return `${eq.type}|${scaleKey(eq.v)}`;
+}
+
+function keyToEquation(key) {
+    const parts = key.split('|');
+    if (parts[0] === 'line') return { type: 'line', m: parseInt(parts[1], 10) / 1000, b: parseInt(parts[2], 10) / 1000 };
+    return { type: parts[0], v: parseInt(parts[1], 10) / 1000 };
+}
+
+function scaleKey(v) {
+    return Math.round(v * 1000);
+}
+
+function insertImplicitMultiplication(s) {
+    let out = s;
+    out = out.replace(/(\d|\)|[xyXY])(?=\()/g, '$1*');
+    out = out.replace(/\)(?=(\d|[xyXY]))/g, ')*');
+    out = out.replace(/(\d)([xyXY])/g, '$1*$2');
+    out = out.replace(/([xyXY])(\d)/g, '$1*$2');
+    out = out.replace(/([xyXY])([xyXY])/g, '$1*$2');
+    return out;
+}
+
+function sanitizeAndEvaluate(expr, xVal, yVal) {
+    let s = expr.replace(/\s+/g, '');
+    s = insertImplicitMultiplication(s);
+    s = s.replace(/x/gi, `(${xVal})`);
+    s = s.replace(/y/gi, `(${yVal})`);
+    if (/[^0-9+\-*/().]/.test(s)) throw new Error("허용되지 않은 문자");
+    const result = Function(`return (${s})`)();
+    if (!Number.isFinite(result)) throw new Error("계산 실패");
+    return result;
+}
+
+function evaluateSide(sideExpr, xVal, yVal) {
+    if (!sideExpr || sideExpr.trim() === '') return 0;
+    return sanitizeAndEvaluate(sideExpr, xVal, yVal);
+}
+
+function normalizeLine(A, B, C) {
+    const len = Math.hypot(A, B);
+    if (len < EPS) return null;
+    let normA = A / len;
+    let normB = B / len;
+    let normC = C / len;
+    if (normA < -EPS || (Math.abs(normA) < EPS && normB < 0)) {
+        normA = -normA;
+        normB = -normB;
+        normC = -normC;
+    }
+    return { A: normA, B: normB, C: normC };
+}
+
+
+</script>
+    <script>
+/* ===== physics.js ===== */
+// ============================================================
+// physics.js
+// 과일 물리, 캔버스 좌표 변환
+// ============================================================
+
+function updatePhysics() {
+    if (gameState !== "RUNNING") return;
+    for (let i = fruits.length - 1; i >= 0; i--) {
+        const f = fruits[i];
+        f.vy += gravity;
+        f.x += f.vx;
+        f.y += f.vy;
+        if (!f.sliced) f.angleOffset += f.rotSpeed;
+        if (f.sliced && f.splitProgress > 2.4) {
+            f.vx += f.sliceInfo && f.sliceInfo.sideBoost ? f.sliceInfo.sideBoost : 0;
+        }
+        if (f.y < -8.4 || f.x < -9 || f.x > 9) {
+            fruits.splice(i, 1);
+        }
+    }
+    if (fruitsRemainingToSpawn <= 0 && fruits.length === 0) {
+        triggerStageClear();
+    }
+}
+
+function spawnOneFruit(stageGuard) {
+    if (stageGuard !== currentStage) return false;
+    if (fruitsRemainingToSpawn <= 0) return false;
+    const spawnOnLeft = Math.random() < 0.5;
+    const startX = spawnOnLeft ? -7.5 : 7.5;
+    const startY = -6.8;
+    const vx = spawnOnLeft ? (0.05 + Math.random() * 0.03) : -(0.05 + Math.random() * 0.03);
+    const vy = 0.17 + Math.random() * 0.03;
+    const type = fruitTypes[Math.floor(Math.random() * fruitTypes.length)];
+    let radius = 0.6;
+    if (type === 'watermelon') radius = 0.9;
+    else if (type === 'coconut') radius = 0.75;
+    else if (type === 'orange') radius = 0.45;
+    fruits.push({
+        id: Date.now() + Math.random(),
+        x: startX,
+        y: startY,
+        vx,
+        vy,
+        type,
+        radius,
+        sliced: false,
+        splitProgress: 0,
+        angleOffset: Math.random() * Math.PI,
+        rotSpeed: (Math.random() - 0.5) * 0.02,
+        sliceInfo: null,
+        sliceRotation: 0
+    });
+    fruitsRemainingToSpawn--;
+    return true;
+}
+
+function getGridScalePx() {
+    const padding = 30;
+    const graphArea = canvas.logicalWidth - padding * 2;
+    return graphArea / (mathGrid.maxX - mathGrid.minX);
+}
+
+function mapToCanvas(gx, gy) {
+    const cSize = canvas.logicalWidth;
+    const padding = 30;
+    const graphArea = cSize - padding * 2;
+    const cx = padding + ((gx - mathGrid.minX) / (mathGrid.maxX - mathGrid.minX)) * graphArea;
+    const cy = padding + graphArea - ((gy - mathGrid.minY) / (mathGrid.maxY - mathGrid.minY)) * graphArea;
+    return { x: cx, y: cy };
+}
+
+function getFruitPixelRadius(type) {
+    if (type === 'watermelon') return 28;
+    if (type === 'coconut') return 23;
+    if (type === 'orange') return 13;
+    return 18;
+}
+
+
+</script>
+    <script>
+/* ===== render.js ===== */
+// ============================================================
+// render.js
+// 캔버스 그리기 (검격 슬라이싱 포함)
+// ============================================================
+
+function resizeCanvas() {
+    const container = canvas.parentElement;
+    const size = Math.min(container.clientWidth, container.clientHeight || container.clientWidth);
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    canvas.logicalWidth = size;
+    canvas.logicalHeight = size;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+function renderLoop() {
+    drawSceneCoordinates();
+    requestAnimationFrame(renderLoop);
+}
+
+function drawSceneCoordinates() {
+    if (!canvas || !ctx) return;
+    ctx.clearRect(0, 0, canvas.logicalWidth, canvas.logicalHeight);
+    drawGrid();
+    drawGuides();
+    fruits.forEach(drawFruit);
+    drawSelectedPoints();
+    drawSlashAnimation();
+    drawPopups();
+}
+
+function drawGrid() {
+    ctx.fillStyle = "#020617";
+    ctx.fillRect(0, 0, canvas.logicalWidth, canvas.logicalHeight);
+    ctx.strokeStyle = "rgba(34, 211, 238, 0.17)";
+    ctx.lineWidth = 1;
+    ctx.font = "10px Pretendard";
+    ctx.fillStyle = "rgba(203, 213, 225, 0.72)";
+    for (let x = mathGrid.minX; x <= mathGrid.maxX; x++) {
+        const pStart = mapToCanvas(x, mathGrid.minY);
+        const pEnd = mapToCanvas(x, mathGrid.maxY);
+        ctx.beginPath();
+        ctx.moveTo(pStart.x, pStart.y);
+        ctx.lineTo(pEnd.x, pEnd.y);
+        ctx.stroke();
+        const pLabel = mapToCanvas(x, 0);
+        if (x !== 0) ctx.fillText(x, pLabel.x - 4, pLabel.y + 14);
+    }
+    for (let y = mathGrid.minY; y <= mathGrid.maxY; y++) {
+        const pStart = mapToCanvas(mathGrid.minX, y);
+        const pEnd = mapToCanvas(mathGrid.maxX, y);
+        ctx.beginPath();
+        ctx.moveTo(pStart.x, pStart.y);
+        ctx.lineTo(pEnd.x, pEnd.y);
+        ctx.stroke();
+        const pLabel = mapToCanvas(0, y);
+        if (y !== 0) ctx.fillText(y, pLabel.x - 14, pLabel.y + 4);
+    }
+    ctx.strokeStyle = "rgba(34, 211, 238, 0.92)";
+    ctx.lineWidth = 2.2;
+    ctx.shadowColor = "rgba(34, 211, 238, 0.8)";
+    ctx.shadowBlur = 7;
+    const xS = mapToCanvas(mathGrid.minX, 0);
+    const xE = mapToCanvas(mathGrid.maxX, 0);
+    ctx.beginPath();
+    ctx.moveTo(xS.x, xS.y);
+    ctx.lineTo(xE.x, xE.y);
+    ctx.stroke();
+    const yS = mapToCanvas(0, mathGrid.minY);
+    const yE = mapToCanvas(0, mathGrid.maxY);
+    ctx.beginPath();
+    ctx.moveTo(yS.x, yS.y);
+    ctx.lineTo(yE.x, yE.y);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#e0f2fe";
+    ctx.font = "bold 14px Pretendard";
+    const originPos = mapToCanvas(0, 0);
+    ctx.fillText("O", originPos.x - 14, originPos.y + 14);
+    const xLabel = mapToCanvas(mathGrid.maxX, 0);
+    ctx.fillText("x", xLabel.x - 10, xLabel.y - 8);
+    const yLabel = mapToCanvas(0, mathGrid.maxY);
+    ctx.fillText("y", yLabel.x + 8, yLabel.y + 12);
+}
+
+function drawGuides() {
+    if (gameState === "STOPPED" && activeMode === 1 && selectedPoints.length === 2) {
+        const pt1 = selectedPoints[0];
+        const pt2 = selectedPoints[1];
+        const dx = pt2.x - pt1.x;
+        ctx.save();
+        ctx.strokeStyle = "rgba(251, 191, 36, 0.95)";
+        ctx.lineWidth = 3.2;
+        ctx.shadowColor = "rgba(251, 191, 36, 0.75)";
+        ctx.shadowBlur = 10;
+        if (dx !== 0) {
+            const a = (pt2.y - pt1.y) / dx;
+            const b = pt1.y - a * pt1.x;
+            const gl1 = mapToCanvas(mathGrid.minX, a * mathGrid.minX + b);
+            const gl2 = mapToCanvas(mathGrid.maxX, a * mathGrid.maxX + b);
+            ctx.beginPath();
+            ctx.moveTo(gl1.x, gl1.y);
+            ctx.lineTo(gl2.x, gl2.y);
+            ctx.stroke();
+        } else {
+            const gl1 = mapToCanvas(pt1.x, mathGrid.minY);
+            const gl2 = mapToCanvas(pt1.x, mathGrid.maxY);
+            ctx.beginPath();
+            ctx.moveTo(gl1.x, gl1.y);
+            ctx.lineTo(gl2.x, gl2.y);
+            ctx.stroke();
+        }
+        ctx.restore();
+    }
+    if (gameState === "STOPPED" && activeMode === 2 && selectedPoints.length === 1) {
+        const pt = selectedPoints[0];
+        const gl1 = mapToCanvas(mathGrid.minX, sliderM * (mathGrid.minX - pt.x) + pt.y);
+        const gl2 = mapToCanvas(mathGrid.maxX, sliderM * (mathGrid.maxX - pt.x) + pt.y);
+        ctx.save();
+        ctx.strokeStyle = "rgba(34, 211, 238, 0.96)";
+        ctx.lineWidth = 3.2;
+        ctx.setLineDash([6, 6]);
+        ctx.shadowColor = "rgba(34, 211, 238, 0.85)";
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.moveTo(gl1.x, gl1.y);
+        ctx.lineTo(gl2.x, gl2.y);
+        ctx.stroke();
+        ctx.restore();
+    }
+    if (gameState === "STOPPED" && selectedPoints.length === 0) {
+        ctx.save();
+        ctx.fillStyle = "rgba(248, 250, 252, 0.76)";
+        ctx.font = "bold 13px Pretendard";
+        ctx.textAlign = "center";
+        const centerPos = mapToCanvas(0, -5.5);
+        ctx.fillText(activeMode === 1 ? "두 점을 터치하여 지정해주세요." : "중심이 될 점을 1개 지정해주세요.", centerPos.x, centerPos.y);
+        ctx.restore();
+    }
+}
+
+function drawFruit(f) {
+    const cp = mapToCanvas(f.x, f.y);
+    ctx.save();
+    ctx.translate(cp.x, cp.y);
+    if (f.sliced) {
+        f.splitProgress = Math.min(f.splitProgress + 0.055, 3.6);
+        drawSlicedFruitByLine(f);
+    } else {
+        ctx.rotate(f.angleOffset);
+        drawWholeFruit(f.type);
+    }
+    ctx.restore();
+}
+
+function drawSlicedFruitByLine(f) {
+    const info = f.sliceInfo;
+    if (!info) {
+        drawWholeFruit(f.type);
+        return;
+    }
+    const den = Math.hypot(info.A, info.B) || 1;
+    const nx = info.A / den;
+    const ny = -info.B / den;
+    const scale = getGridScalePx();
+    const lineOffset = -info.signedDistance * scale;
+    const radiusPx = getFruitPixelRadius(f.type);
+    const move = Math.min(8 + f.splitProgress * 13, 42);
+    drawClippedFruitHalf(f, 1, nx, ny, lineOffset, move, radiusPx);
+    drawClippedFruitHalf(f, -1, nx, ny, lineOffset, move, radiusPx);
+}
+
+function drawClippedFruitHalf(f, side, nx, ny, lineOffset, move, radiusPx) {
+    ctx.save();
+    ctx.translate(nx * move * side, ny * move * side);
+    ctx.rotate(side * Math.min(f.splitProgress * 0.045, 0.16));
+    applyHalfPlaneClip(side, nx, ny, lineOffset, radiusPx + 90);
+    ctx.save();
+    ctx.rotate(f.sliceRotation || 0);
+    drawWholeFruit(f.type);
+    ctx.restore();
+    drawCutFace(f.type, nx, ny, lineOffset, radiusPx);
+    ctx.restore();
+}
+
+function applyHalfPlaneClip(side, nx, ny, offset, size) {
+    const tx = -ny;
+    const ty = nx;
+    const px = nx * offset;
+    const py = ny * offset;
+    ctx.beginPath();
+    ctx.moveTo(px + tx * size, py + ty * size);
+    ctx.lineTo(px - tx * size, py - ty * size);
+    ctx.lineTo(px - tx * size + nx * side * size * 2, py - ty * size + ny * side * size * 2);
+    ctx.lineTo(px + tx * size + nx * side * size * 2, py + ty * size + ny * side * size * 2);
+    ctx.closePath();
+    ctx.clip();
+}
+
+function drawCutFace(type, nx, ny, offset, radiusPx) {
+    const t = { x: -ny, y: nx };
+    const absOffset = Math.abs(offset);
+    if (absOffset > radiusPx) return;
+    const half = Math.sqrt(Math.max(0, radiusPx * radiusPx - absOffset * absOffset));
+    const px = nx * offset;
+    const py = ny * offset;
+    const colors = getCutColors(type);
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = colors.outer;
+    ctx.lineWidth = Math.max(5, radiusPx * 0.23);
+    ctx.beginPath();
+    ctx.moveTo(px - t.x * half, py - t.y * half);
+    ctx.lineTo(px + t.x * half, py + t.y * half);
+    ctx.stroke();
+    ctx.strokeStyle = colors.inner;
+    ctx.lineWidth = Math.max(2, radiusPx * 0.1);
+    ctx.beginPath();
+    ctx.moveTo(px - t.x * half * 0.92, py - t.y * half * 0.92);
+    ctx.lineTo(px + t.x * half * 0.92, py + t.y * half * 0.92);
+    ctx.stroke();
+    if (type === 'watermelon') {
+        ctx.fillStyle = '#020617';
+        const seedCount = Math.max(1, Math.floor(half / 12));
+        for (let i = 0; i < seedCount; i++) {
+            const u = ((i + 1) / (seedCount + 1) - 0.5) * half * 1.3;
+            ctx.beginPath();
+            ctx.ellipse(px + t.x * u + nx * 3, py + t.y * u + ny * 3, 1.4, 2.2, Math.atan2(t.y, t.x), 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+    ctx.restore();
+}
+
+function getCutColors(type) {
+    if (type === 'watermelon') return { outer: '#fecdd3', inner: '#ef4444' };
+    if (type === 'coconut') return { outer: '#f8fafc', inner: '#ffffff' };
+    if (type === 'apple') return { outer: '#fef08a', inner: '#fff7ad' };
+    return { outer: '#fed7aa', inner: '#f97316' };
+}
+
+function drawWholeFruit(type) {
+    const radius = getFruitPixelRadius(type);
+    ctx.lineWidth = 2.5;
+    ctx.strokeStyle = "#020617";
+    if (type === 'watermelon') {
+        const grad = ctx.createRadialGradient(-7, -8, 4, 0, 0, radius);
+        grad.addColorStop(0, '#4ade80');
+        grad.addColorStop(1, '#16a34a');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.strokeStyle = '#14532d';
+        ctx.lineWidth = 3.3;
+        for (let angle = -Math.PI; angle < Math.PI; angle += Math.PI / 3) {
+            ctx.beginPath();
+            ctx.arc(0, 0, radius - 5, angle, angle + Math.PI / 6);
+            ctx.stroke();
+        }
+    } else if (type === 'coconut') {
+        const grad = ctx.createRadialGradient(-6, -7, 3, 0, 0, radius);
+        grad.addColorStop(0, '#a16207');
+        grad.addColorStop(1, '#78350f');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.strokeStyle = '#451a03';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(-10, -5); ctx.lineTo(-15, -2);
+        ctx.moveTo(10, 5); ctx.lineTo(15, 8);
+        ctx.moveTo(-5, 10); ctx.lineTo(-8, 15);
+        ctx.stroke();
+    } else if (type === 'apple') {
+        const grad = ctx.createRadialGradient(-6, -8, 4, 0, 0, radius);
+        grad.addColorStop(0, '#fb7185');
+        grad.addColorStop(1, '#dc2626');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#78350f';
+        ctx.fillRect(-1.5, -radius - 4, 3, 6);
+        ctx.fillStyle = '#16a34a';
+        ctx.beginPath();
+        ctx.ellipse(3, -radius - 3, 2.5, 4.5, Math.PI / 4, 0, Math.PI * 2);
+        ctx.fill();
+    } else if (type === 'orange') {
+        const grad = ctx.createRadialGradient(-5, -5, 3, 0, 0, radius);
+        grad.addColorStop(0, '#fdba74');
+        grad.addColorStop(1, '#f97316');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(0, 0, radius, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.fillStyle = '#ea580c';
+        ctx.beginPath();
+        ctx.arc(-4, -4, 1.2, 0, Math.PI * 2);
+        ctx.arc(4, 3, 1.2, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+
+function drawSelectedPoints() {
+    selectedPoints.forEach((pt, idx) => {
+        const renderCoords = pt.isDragging ? { x: pt.rx, y: pt.ry } : { x: pt.x, y: pt.y };
+        const cp = mapToCanvas(renderCoords.x, renderCoords.y);
+        ctx.fillStyle = idx === 0 ? "#ec4899" : "#3b82f6";
+        ctx.beginPath();
+        ctx.arc(cp.x, cp.y, 8, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.strokeStyle = "#020617";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        if (gameState === "STOPPED") {
+            ctx.strokeStyle = "rgba(167, 139, 250, 0.45)";
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.arc(cp.x, cp.y, 24, 0, Math.PI * 2);
+            ctx.stroke();
+        }
+        ctx.fillStyle = "#f8fafc";
+        ctx.font = "bold 11px Pretendard";
+        const labelX = pt.isDragging ? Math.round(pt.rx) : pt.x;
+        const labelY = pt.isDragging ? Math.round(pt.ry) : pt.y;
+        ctx.fillText(`(${labelX},${labelY})`, cp.x - 15, cp.y - 14);
+    });
+}
+
+function drawSlashAnimation() {
+    if (!slashAnim.active) return;
+    slashAnim.timer--;
+    if (slashAnim.timer <= 0) {
+        slashAnim.active = false;
+        return;
+    }
+    const sp1 = mapToCanvas(slashAnim.x1, slashAnim.y1);
+    const sp2 = mapToCanvas(slashAnim.x2, slashAnim.y2);
+    const power = slashAnim.timer / 28;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = `rgba(34, 211, 238, ${0.45 * power})`;
+    ctx.lineWidth = 18 * power;
+    ctx.shadowColor = "rgba(34, 211, 238, 0.95)";
+    ctx.shadowBlur = 25;
+    ctx.beginPath();
+    ctx.moveTo(sp1.x, sp1.y);
+    ctx.lineTo(sp2.x, sp2.y);
+    ctx.stroke();
+    ctx.strokeStyle = `rgba(255, 255, 255, ${0.9 * power})`;
+    ctx.lineWidth = 7 * power;
+    ctx.shadowColor = "rgba(255, 255, 255, 0.95)";
+    ctx.shadowBlur = 18;
+    ctx.beginPath();
+    ctx.moveTo(sp1.x, sp1.y);
+    ctx.lineTo(sp2.x, sp2.y);
+    ctx.stroke();
+    ctx.strokeStyle = `rgba(255, 255, 255, ${power})`;
+    ctx.lineWidth = Math.max(1.5, 2.4 * power);
+    ctx.shadowBlur = 0;
+    ctx.beginPath();
+    ctx.moveTo(sp1.x, sp1.y);
+    ctx.lineTo(sp2.x, sp2.y);
+    ctx.stroke();
+    ctx.restore();
+}
+
+function drawPopups() {
+    for (let i = popups.length - 1; i >= 0; i--) {
+        const p = popups[i];
+        p.timer--;
+        p.alpha = p.timer / 65;
+        p.y += 0.05;
+        const cp = mapToCanvas(p.x, p.y);
+        ctx.save();
+        ctx.fillStyle = p.color;
+        ctx.font = "bold 12px Pretendard";
+        ctx.shadowColor = "#000000";
+        ctx.shadowBlur = 4;
+        ctx.textAlign = "center";
+        ctx.globalAlpha = p.alpha;
+        ctx.fillText(p.text, cp.x, cp.y);
+        ctx.restore();
+        if (p.timer <= 0) popups.splice(i, 1);
+    }
+}
+
+function updateUI() {
+    document.getElementById('score-text').innerText = `SCORE ${score}`;
+    if (!isFeverTime) document.getElementById('fever-fill').style.width = `${feverGauge}%`;
+}
+
+
+</script>
+    <script>
+/* ===== ui.js ===== */
+// ============================================================
+// ui.js
+// 마우스/터치/키보드, 모달, 식 입력
+// ============================================================
+
+function toggleHelp(show) {
+    document.getElementById('popup-help').style.display = show ? 'flex' : 'none';
+}
+
+function switchMode(modeNum) {
+    if (gameState === "STOPPED" && modeNum !== activeMode) selectedPoints = [];
+    activeMode = modeNum;
+    document.getElementById('m-btn-1').classList.toggle('active', modeNum === 1);
+    document.getElementById('m-btn-2').classList.toggle('active', modeNum === 2);
+    refreshControlVisibility();
+}
+
+function updateMode2Slope() {
+    sliderM = parseFloat(document.getElementById('slider-m').value);
+    document.getElementById('val-m').innerHTML = formatNumberHTML(sliderM);
+}
+
+function setActionUIRunning() {
+    const actionBtn = document.getElementById('main-action-btn');
+    const eqTriggerBtn = document.getElementById('eq-trigger-btn');
+    const sliderBox = document.getElementById('mode2-slider-box');
+    actionBtn.innerText = "STOP";
+    actionBtn.classList.remove('running');
+    eqTriggerBtn.style.visibility = 'hidden';
+    sliderBox.style.display = 'none';
+}
+
+function refreshControlVisibility() {
+    const eqTriggerBtn = document.getElementById('eq-trigger-btn');
+    const sliderBox = document.getElementById('mode2-slider-box');
+    if (gameState === "STOPPED") {
+        eqTriggerBtn.style.visibility = 'visible';
+        if (activeMode === 2) {
+            sliderBox.style.display = 'block';
+            eqTriggerBtn.innerText = "식 선택";
+        } else {
+            sliderBox.style.display = 'none';
+            eqTriggerBtn.innerText = "식 입력";
+        }
+    } else {
+        eqTriggerBtn.style.visibility = 'hidden';
+        sliderBox.style.display = 'none';
+    }
+}
+
+function handleMainAction() {
+    const actionBtn = document.getElementById('main-action-btn');
+    if (gameState === "RUNNING") {
+        gameState = "STOPPED";
+        actionBtn.innerText = "GO";
+        actionBtn.classList.add('running');
+        refreshControlVisibility();
+    } else if (gameState === "STOPPED") {
+        gameState = "RUNNING";
+        actionBtn.innerText = "STOP";
+        actionBtn.classList.remove('running');
+        selectedPoints = [];
+        refreshControlVisibility();
+    }
+}
+
+function showToast(msg, isError = true, asHTML = false) {
+    const el = document.getElementById('toast-message');
+    if (asHTML) el.innerHTML = msg;
+    else el.textContent = msg;
+    el.style.borderLeftColor = isError ? 'var(--red)' : 'var(--green)';
+    el.style.display = 'block';
+    void el.offsetWidth;
+    el.style.opacity = '1';
+    setTimeout(() => {
+        el.style.opacity = '0';
+        setTimeout(() => el.style.display = 'none', 300);
+    }, 2200);
+}
+
+function triggerWrongAnswer(msg, asHTML = false) {
+    showToast(msg, true, asHTML);
+    const overlay = document.getElementById('damage-overlay');
+    overlay.classList.add('damage-flash');
+    setTimeout(() => overlay.classList.remove('damage-flash'), 300);
+    stageCutsUsed++;
+    if (gameState === "STOPPED") handleMainAction();
+}
+
+function getGridCoordsFromEvent(clientX, clientY) {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.logicalWidth / rect.width;
+    const scaleY = canvas.logicalHeight / rect.height;
+    const mx = (clientX - rect.left) * scaleX;
+    const my = (clientY - rect.top) * scaleY;
+    const padding = 30;
+    const graphArea = canvas.logicalWidth - padding * 2;
+    const gx = mathGrid.minX + ((mx - padding) / graphArea) * (mathGrid.maxX - mathGrid.minX);
+    const gy = mathGrid.maxY - ((my - padding) / graphArea) * (mathGrid.maxY - mathGrid.minY);
+    return { rx: Math.round(gx), ry: Math.round(gy), px: mx, py: my, fgx: gx, fgy: gy };
+}
+
+function handleMousedown(e) {
+    if (gameState !== "STOPPED") return;
+    const coords = getGridCoordsFromEvent(e.clientX, e.clientY);
+    beginPointInteraction(coords);
+}
+
+function beginPointInteraction(coords) {
+    for (let i = 0; i < selectedPoints.length; i++) {
+        const pt = selectedPoints[i];
+        const cp = mapToCanvas(pt.x, pt.y);
+        const dist = Math.hypot(coords.px - cp.x, coords.py - cp.y);
+        if (dist < 35) {
+            isDraggingPoint = true;
+            dragIdx = i;
+            selectedPoints[i].isDragging = true;
+            dragOffset.x = pt.x - coords.fgx;
+            dragOffset.y = pt.y - coords.fgy;
+            return;
+        }
+    }
+    if (activeMode === 1 && selectedPoints.length < 2) {
+        const dup = selectedPoints.some(p => p.x === coords.rx && p.y === coords.ry);
+        if (!dup && isInsideGrid(coords.rx, coords.ry)) selectedPoints.push({ x: coords.rx, y: coords.ry, rx: coords.rx, ry: coords.ry, isDragging: false });
+    } else if (activeMode === 2 && selectedPoints.length < 1) {
+        if (isInsideGrid(coords.rx, coords.ry)) selectedPoints.push({ x: coords.rx, y: coords.ry, rx: coords.rx, ry: coords.ry, isDragging: false });
+    }
+}
+
+function isInsideGrid(x, y) {
+    return x >= mathGrid.minX && x <= mathGrid.maxX && y >= mathGrid.minY && y <= mathGrid.maxY;
+}
+
+function handleMousemove(e) {
+    if (!isDraggingPoint || dragIdx === -1) return;
+    const coords = getGridCoordsFromEvent(e.clientX, e.clientY);
+    dragSelectedPoint(coords);
+}
+
+function dragSelectedPoint(coords) {
+    let targetX = coords.fgx + dragOffset.x;
+    let targetY = coords.fgy + dragOffset.y;
+    selectedPoints[dragIdx].rx = Math.max(mathGrid.minX, Math.min(mathGrid.maxX, targetX));
+    selectedPoints[dragIdx].ry = Math.max(mathGrid.minY, Math.min(mathGrid.maxY, targetY));
+}
+
+function handleMouseup() {
+    if (isDraggingPoint && dragIdx !== -1) {
+        let snapX = Math.round(selectedPoints[dragIdx].rx);
+        let snapY = Math.round(selectedPoints[dragIdx].ry);
+        if (activeMode === 1 && selectedPoints.length === 2) {
+            const otherIdx = dragIdx === 0 ? 1 : 0;
+            const otherPt = selectedPoints[otherIdx];
+            if (otherPt.x === snapX && otherPt.y === snapY) {
+                snapX = selectedPoints[dragIdx].x;
+                snapY = selectedPoints[dragIdx].y;
+            }
+        }
+        selectedPoints[dragIdx].x = snapX;
+        selectedPoints[dragIdx].y = snapY;
+        selectedPoints[dragIdx].rx = snapX;
+        selectedPoints[dragIdx].ry = snapY;
+        selectedPoints[dragIdx].isDragging = false;
+    }
+    isDraggingPoint = false;
+    dragIdx = -1;
+}
+
+function handleTouchstart(e) {
+    if (gameState !== "STOPPED") return;
+    const touch = e.touches[0];
+    const coords = getGridCoordsFromEvent(touch.clientX, touch.clientY);
+    beginPointInteraction(coords);
+    e.preventDefault();
+}
+
+function handleTouchmove(e) {
+    if (!isDraggingPoint || dragIdx === -1) return;
+    const touch = e.touches[0];
+    const coords = getGridCoordsFromEvent(touch.clientX, touch.clientY);
+    dragSelectedPoint(coords);
+    e.preventDefault();
+}
+
+function handleTouchend() {
+    handleMouseup();
+}
+
+function openMathBoard() {
+    if (activeMode === 1) {
+        if (selectedPoints.length < 2) {
+            showToast("좌표 평면 위에 두 점을 먼저 지정해주세요!");
+            return;
+        }
+        formulaStr = "";
+        cursorIdx = 0;
+        updateMathBoardUI();
+        document.getElementById('overlay-math-board').style.display = 'flex';
+    } else {
+        if (selectedPoints.length < 1) {
+            showToast("좌표 평면 위에 중심이 될 점을 먼저 지정해주세요!");
+            return;
+        }
+        openQuizBoard();
+    }
+}
+
+function closeMathBoard() {
+    document.getElementById('overlay-math-board').style.display = 'none';
+}
+
+function openQuizBoard() {
+    const pt = selectedPoints[0];
+    const m = sliderM;
+    const b = pt.y - m * pt.x;
+    const correct = Math.abs(m) < EPS ? { type: 'y', v: b } : { type: 'line', m, b };
+    quizCorrectKey = equationKey(correct);
+    quizCorrectCut = { A: m, B: -1, C: b };
+    const q = `선택한 점 (${pt.x}, ${pt.y})을 지나고, 기울기가 ${formatNumberHTML(m)}인 직선의 방정식은 무엇일까요?`;
+    document.getElementById('quiz-question-text').innerHTML = q;
+    const options = buildQuizOptions(correct);
+    shuffle(options);
+    const container = document.getElementById('quiz-options-container');
+    container.innerHTML = "";
+    options.forEach(eq => {
+        const btn = document.createElement('button');
+        btn.className = "quiz-option-btn";
+        btn.innerHTML = formatEquationHTML(eq);
+        btn.onclick = function() { submitQuizChoice(equationKey(eq)); };
+        container.appendChild(btn);
+    });
+    document.getElementById('overlay-quiz-board').style.display = 'flex';
+}
+
+function buildQuizOptions(correct) {
+    const list = [];
+    const add = eq => {
+        if (!list.some(item => equationKey(item) === equationKey(eq))) list.push(eq);
+    };
+    if (correct.type === 'line') {
+        const m = correct.m;
+        const b = correct.b;
+        if (Math.abs(b) < EPS) {
+            add({ type: 'line', m, b: 0 });
+            add({ type: 'line', m: -m, b: 0 });
+            add({ type: 'y', v: m });
+            add({ type: 'y', v: -m });
+        } else {
+            add({ type: 'line', m, b });
+            add({ type: 'line', m: -m, b });
+            add({ type: 'line', m, b: -b });
+            add({ type: 'line', m: -m, b: -b });
+        }
+    } else if (correct.type === 'y') {
+        const v = correct.v;
+        if (Math.abs(v) < EPS) {
+            add({ type: 'y', v: 0 });
+            add({ type: 'y', v: 1 });
+            add({ type: 'y', v: -1 });
+            add({ type: 'x', v: 1 });
+        } else {
+            add({ type: 'y', v });
+            add({ type: 'y', v: -v });
+            add({ type: 'x', v });
+            add({ type: 'x', v: -v });
+        }
+    } else if (correct.type === 'x') {
+        const v = correct.v;
+        add({ type: 'x', v });
+        add({ type: 'x', v: -v || 1 });
+        add({ type: 'y', v });
+        add({ type: 'y', v: -v || -1 });
+    }
+    let seed = 1;
+    while (list.length < 4 && seed < 12) {
+        add({ type: 'line', m: seed % 2 ? seed / 2 : -seed / 2, b: seed % 3 - 1 });
+        seed++;
+    }
+    return list.slice(0, 4);
+}
+
+function closeQuizBoard() {
+    document.getElementById('overlay-quiz-board').style.display = 'none';
+}
+
+function submitQuizChoice(chosenKey) {
+    closeQuizBoard();
+    if (chosenKey === quizCorrectKey) {
+        setTimeout(() => executeSliceCut(quizCorrectCut.A, quizCorrectCut.B, quizCorrectCut.C), SLICE_DELAY_MS);
+    } else {
+        const correctHTML = formatEquationHTML(keyToEquation(quizCorrectKey));
+        triggerWrongAnswer(`오답입니다! 정답: ${correctHTML}`, true);
+    }
+}
+
+function typeMath(char) {
+    if (char === 'clear') {
+        formulaStr = "";
+        cursorIdx = 0;
+    } else if (char === 'backspace') {
+        if (cursorIdx > 0) {
+            formulaStr = formulaStr.substring(0, cursorIdx - 1) + formulaStr.substring(cursorIdx);
+            cursorIdx--;
+        }
+    } else {
+        if (formulaStr.length < 32) {
+            formulaStr = formulaStr.substring(0, cursorIdx) + char + formulaStr.substring(cursorIdx);
+            cursorIdx += char.length;
+        }
+    }
+    updateMathBoardUI();
+}
+
+function moveCursor(dir) {
+    cursorIdx = Math.max(0, Math.min(formulaStr.length, cursorIdx + dir));
+    updateMathBoardUI();
+}
+
+function updateMathBoardUI() {
+    const display = document.getElementById('expr-display');
+    let html = "";
+    for (let i = 0; i < formulaStr.length; i++) {
+        if (i === cursorIdx) html += `<span class="math-char"><span class="math-cursor"></span>${escapeHTML(formulaStr[i])}</span>`;
+        else html += `<span class="math-char">${escapeHTML(formulaStr[i])}</span>`;
+    }
+    if (cursorIdx === formulaStr.length) html += `<span class="math-char"><span class="math-cursor"></span></span>`;
+    display.innerHTML = html || `<span class="math-char" style="color:#94a3b8;">식을 입력하세요</span><span class="math-cursor"></span>`;
+}
+
+function submitMathForm() {
+    let expr = formulaStr.trim();
+    if (!expr) return;
+    if (!expr.includes('=')) expr = "y=" + expr;
+    const parts = expr.split('=');
+    if (parts.length !== 2) {
+        triggerWrongAnswer("등식 형태로 식을 작성해주세요.");
+        closeMathBoard();
+        return;
+    }
+    const left = parts[0];
+    const right = parts[1];
+    try {
+        const cVal = evaluateSide(left, 0, 0) - evaluateSide(right, 0, 0);
+        const aVal = (evaluateSide(left, 1, 0) - evaluateSide(right, 1, 0)) - cVal;
+        const bVal = (evaluateSide(left, 0, 1) - evaluateSide(right, 0, 1)) - cVal;
+        if (!Number.isFinite(aVal) || !Number.isFinite(bVal) || !Number.isFinite(cVal) || (Math.abs(aVal) < EPS && Math.abs(bVal) < EPS)) {
+            triggerWrongAnswer("직선의 구조가 성립하지 않는 식입니다.");
+            closeMathBoard();
+            return;
+        }
+        const userLine = normalizeLine(aVal, bVal, cVal);
+        if (!userLine) {
+            triggerWrongAnswer("올바르지 않은 식입니다.");
+            closeMathBoard();
+            return;
+        }
+        const p1 = selectedPoints[0];
+        const p2 = selectedPoints[1];
+        const dx = p2.x - p1.x;
+        const trueA = p2.y - p1.y;
+        const trueB = -dx;
+        const trueC = p2.x * p1.y - p1.x * p2.y;
+        const trueLine = normalizeLine(trueA, trueB, trueC);
+        if (!trueLine || Math.abs(userLine.A - trueLine.A) > 0.05 || Math.abs(userLine.B - trueLine.B) > 0.05 || Math.abs(userLine.C - trueLine.C) > 0.05) {
+            triggerWrongAnswer("두 점을 지나는 정확한 직선의 방정식이 아닙니다!");
+            closeMathBoard();
+            return;
+        }
+        closeMathBoard();
+        setTimeout(() => executeSliceCut(aVal, bVal, cVal), SLICE_DELAY_MS);
+    } catch (e) {
+        triggerWrongAnswer("식을 해독할 수 없습니다. 문자 대입이나 연산식을 확인하세요.");
+        closeMathBoard();
+    }
+}
+
+function handleKeyboardInput(e) {
+    const mathOpen = document.getElementById('overlay-math-board').style.display === 'flex';
+    const quizOpen = document.getElementById('overlay-quiz-board').style.display === 'flex';
+    const helpOpen = document.getElementById('popup-help').style.display === 'flex';
+    if (e.key === 'Escape') {
+        if (mathOpen) closeMathBoard();
+        if (quizOpen) closeQuizBoard();
+        if (helpOpen) toggleHelp(false);
+        return;
+    }
+    if (mathOpen) {
+        if (/^[0-9xyXY+\-=()]$/.test(e.key)) {
+            typeMath(e.key.toLowerCase());
+            e.preventDefault();
+        } else if (e.key === 'Backspace') {
+            typeMath('backspace');
+            e.preventDefault();
+        } else if (e.key === 'ArrowLeft') {
+            moveCursor(-1);
+            e.preventDefault();
+        } else if (e.key === 'ArrowRight') {
+            moveCursor(1);
+            e.preventDefault();
+        } else if (e.key === 'Enter') {
+            submitMathForm();
+            e.preventDefault();
+        }
+        return;
+    }
+    if (e.code === 'Space' && (gameState === "RUNNING" || gameState === "STOPPED")) {
+        handleMainAction();
+        e.preventDefault();
+    }
+    if (e.key === 'Enter' && gameState === "STOPPED") openMathBoard();
+}
+
+
+</script>
+    <script>
+/* ===== game.js ===== */
+// ============================================================
+// game.js
+// 스테이지, 점수, 검격, 피버
+// ============================================================
+
+function initGameRun() {
+    document.getElementById('screen-start').style.display = 'none';
+    document.getElementById('popup-final-result').style.display = 'none';
+    score = 0;
+    popups = [];
+    resetFever();
+    loadStage(1);
+}
+
+function resetFever() {
+    if (feverTimer) clearInterval(feverTimer);
+    feverTimer = null;
+    feverTicks = 0;
+    feverGauge = 0;
+    isFeverTime = false;
+    const fill = document.getElementById('fever-fill');
+    const txt = document.getElementById('fever-txt');
+    if (fill) {
+        fill.style.width = '0%';
+        fill.classList.remove('fever-active');
+    }
+    if (txt) txt.innerText = 'fever';
+}
+
+function loadStage(stageNum) {
+    stageSpawnToken++;
+    currentStage = stageNum;
+    stageCutsUsed = 0;
+    stageScoreEarned = 0;
+    fruits = [];
+    selectedPoints = [];
+    // 피버 게이지는 스테이지 간에 유지됨. 피버 타임 종료시(또는 게임 처음 시작 시)에만 초기화.
+    gameState = "RUNNING";
+    const config = stageConfig[currentStage];
+    fruitsRemainingToSpawn = config.totalFruits;
+    document.getElementById('stage-text').innerText = `STAGE ${currentStage}/4`;
+    updateUI();
+    setActionUIRunning();
+    startStageWaveSpawning();
+}
+
+function startStageWaveSpawning() {
+    const config = stageConfig[currentStage];
+    const token = stageSpawnToken;
+    const stageAtStart = currentStage;
+    let spawnedCount = 0;
+    function spawnNext() {
+        if (token !== stageSpawnToken || stageAtStart !== currentStage) return;
+        if (gameState !== "RUNNING" && gameState !== "STOPPED") return;
+        if (spawnedCount >= config.totalFruits) return;
+        if (gameState === "RUNNING") {
+            if (spawnOneFruit(stageAtStart)) spawnedCount++;
+        }
+        setTimeout(spawnNext, 250);
+    }
+    spawnNext();
+}
+
+function triggerStageClear() {
+    if (gameState === "SUMMARY") return;
+    gameState = "SUMMARY";
+    document.getElementById('summary-title').innerText = `STAGE ${currentStage} CLEAR`;
+    document.getElementById('summary-desc').innerText = `사용한 검격 수: ${stageCutsUsed}회\n스테이지 획득 점수: ${stageScoreEarned}점\n누적 총점: ${score}점`;
+    document.getElementById('popup-stage-summary').style.display = 'flex';
+}
+
+function proceedToNextStage() {
+    document.getElementById('popup-stage-summary').style.display = 'none';
+    if (currentStage < 4) {
+        loadStage(currentStage + 1);
+    } else {
+        gameState = "FINAL";
+        document.getElementById('final-desc').innerText = `최종 총 점수: ${score}점`;
+        document.getElementById('popup-final-result').style.display = 'flex';
+    }
+}
+
+function returnToStartScreen() {
+    document.getElementById('popup-final-result').style.display = 'none';
+    gameState = "START";
+    document.getElementById('screen-start').style.display = 'flex';
+    setActionUIRunning();
+}
+
+function executeSliceCut(A, B, C) {
+    stageCutsUsed++;
+    let lx1, ly1, lx2, ly2;
+    if (Math.abs(B) < EPS) {
+        lx1 = -C / A;
+        ly1 = mathGrid.minY;
+        lx2 = -C / A;
+        ly2 = mathGrid.maxY;
+    } else {
+        lx1 = mathGrid.minX;
+        ly1 = (-A * lx1 - C) / B;
+        lx2 = mathGrid.maxX;
+        ly2 = (-A * lx2 - C) / B;
+    }
+    slashAnim = { active: true, x1: lx1, y1: ly1, x2: lx2, y2: ly2, timer: 28 };
+    const denominator = Math.hypot(A, B);
+    let slicedFruitsCount = 0;
+    let sliceBaseScore = 0;
+    fruits.forEach(f => {
+        if (f.sliced) return;
+        const signedDistance = (A * f.x + B * f.y + C) / denominator;
+        const distance = Math.abs(signedDistance);
+        if (distance < f.radius) {
+            f.sliced = true;
+            f.splitProgress = 0.01;
+            f.sliceRotation = f.angleOffset;
+            f.sliceInfo = { A, B, C, signedDistance, sideBoost: (Math.random() - 0.5) * 0.0002 };
+            slicedFruitsCount++;
+            const precision = 1 - (distance / f.radius);
+            const accuracyPercent = Math.round(precision * 100);
+            let rating = "SLICED";
+            let color = "#cbd5e1";
+            const modeWeight = activeMode === 1 ? 1.0 : 0.6;
+            let calculatedScore = Math.round((precision * 90 + 10) * modeWeight);
+            if (accuracyPercent >= 95) {
+                rating = "PERFECT";
+                color = "#bef264";
+                calculatedScore = Math.round(100 * modeWeight);
+            } else if (accuracyPercent >= 80) {
+                rating = "GREAT";
+                color = "#38bdf8";
+            } else if (accuracyPercent >= 50) {
+                rating = "GOOD";
+                color = "#facc15";
+            }
+            sliceBaseScore += calculatedScore;
+            popups.push({
+                x: f.x,
+                y: f.y,
+                text: `${rating} +${calculatedScore}점 (${accuracyPercent}%)`,
+                color,
+                alpha: 1.0,
+                timer: 65
+            });
+        }
+    });
+    if (slicedFruitsCount > 0) {
+        const comboMult = slicedFruitsCount;
+        let finalGain = sliceBaseScore * comboMult;
+        if (isFeverTime) finalGain *= 2;
+        if (comboMult > 1) triggerComboPop(`${comboMult} COMBO!`);
+        score += finalGain;
+        stageScoreEarned += finalGain;
+        if (!isFeverTime) {
+            feverGauge = Math.min(100, feverGauge + slicedFruitsCount * 12);
+            if (feverGauge >= 100) startFeverMode();
+        }
+    }
+    updateUI();
+    selectedPoints = [];
+    setTimeout(() => {
+        if (gameState === "STOPPED") handleMainAction();
+    }, 1000);
+}
+
+function startFeverMode() {
+    if (feverTimer) clearInterval(feverTimer);
+    isFeverTime = true;
+    feverGauge = 100;
+    feverTicks = 60;
+    document.getElementById('fever-fill').classList.add('fever-active');
+    document.getElementById('fever-txt').innerText = "FEVER";
+    feverTimer = setInterval(() => {
+        if (gameState !== "RUNNING") return;
+        feverTicks--;
+        feverGauge = (feverTicks / 60) * 100;
+        document.getElementById('fever-fill').style.width = `${feverGauge}%`;
+        if (feverTicks <= 0) {
+            resetFever();
+            updateUI();
+        }
+    }, 100);
+    const stageAtFeverStart = currentStage;
+    fruitsRemainingToSpawn += 3;
+    for (let i = 0; i < 3; i++) {
+        setTimeout(() => {
+            if (stageAtFeverStart === currentStage && (gameState === "RUNNING" || gameState === "STOPPED")) spawnOneFruit(stageAtFeverStart);
+        }, i * 150);
+    }
+}
+
+function triggerComboPop(text) {
+    const el = document.getElementById('combo-layer');
+    el.innerText = text;
+    el.classList.add('pop');
+    setTimeout(() => el.classList.remove('pop'), 950);
+}
+
+
+</script>
+    <script>
+/* ===== main.js ===== */
+// ============================================================
+// main.js
+// 게임 시작 진입점
+// ============================================================
+
+window.onload = function() {
+    canvas = document.getElementById('coordinate-canvas');
+    ctx = canvas.getContext('2d');
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    setInterval(updatePhysics, 1000 / 60);
+    requestAnimationFrame(renderLoop);
+    canvas.addEventListener('mousedown', handleMousedown);
+    canvas.addEventListener('mousemove', handleMousemove);
+    canvas.addEventListener('mouseup', handleMouseup);
+    canvas.addEventListener('mouseleave', handleMouseup);
+    canvas.addEventListener('touchstart', handleTouchstart, {passive: false});
+    canvas.addEventListener('touchmove', handleTouchmove, {passive: false});
+    canvas.addEventListener('touchend', handleTouchend, {passive: false});
+    document.addEventListener('keydown', handleKeyboardInput);
+    updateMode2Slope();
+};
+
+</script>
+</body>
+</html>
